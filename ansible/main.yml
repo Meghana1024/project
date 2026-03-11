@@ -1,0 +1,24 @@
+- name: Install Nginx
+  apt:
+    name: nginx
+    state: present
+    update_cache: yes
+
+- name: Ensure Nginx is running
+  service:
+    name: nginx
+    state: started
+    enabled: yes
+
+- name: Get EC2 Instance ID
+  command: curl -s http://169.254.169.254/latest/meta-data/instance-id
+  register: ec2_instance_id
+
+- name: Deploy provided index template
+  template:
+    src: index.html.j2
+    dest: /var/www/html/index.html
+    mode: '0644'
+  vars:
+    instance_id: "{{ ec2_instance_id.stdout }}"
+    deployment_time: "{{ ansible_date_time.iso8601 }}"

@@ -1,0 +1,11 @@
+- name: Configure Nginx Web Servers
+  hosts: web
+  become: yes
+  gather_facts: yes
+
+  vars:
+    deployment_time: "{{ ansible_date_time.iso8601 }}"
+    instance_id: "{{ ansible_ec2_instance_id | default('N/A') }}"
+
+  roles:
+    - nginx
